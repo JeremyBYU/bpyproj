@@ -19,8 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import textwrap
+import logging
 
 import bpy
+
+log = logging.getLogger(__name__)
+print(__name__)
+
 
 bl_info = {
     "name": "Map Projection",
@@ -54,6 +59,24 @@ def _checkPath():
 
 
 _checkPath()
+
+import projection # pylint: disable=I0011, C0413
+from dependencies import install_deps, get_python_path  # pylint: disable=I0011, C0413
+
+
+class InstallDependencies(bpy.types.Operator):
+    bl_idname = "bpyproj.dependencies"
+    bl_label = "Install Dependencies"
+    bl_description = "Install Pip and Pyproj dependencies"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.mode == 'OBJECT'
+
+    def invoke(self, context, event):
+        install_deps()
+        return {'FINISHED'}
 
 
 class PyprojProperties(bpy.types.PropertyGroup):
@@ -90,6 +113,8 @@ class PanelSettings(bpy.types.Panel):
 
         box = layout.box()
         box.prop(addon, "srid")
+
+        box.operator("bpyproj.dependencies")
 
 
 def register():
