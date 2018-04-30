@@ -24,8 +24,6 @@ import logging
 import bpy
 
 log = logging.getLogger(__name__)
-print(__name__)
-
 
 bl_info = {
     "name": "Map Projection",
@@ -42,14 +40,6 @@ bl_info = {
 }
 
 
-# force cleanup of sys.modules to avoid conflicts with the other addons for Blender
-# for m in [
-#         "app", "building", "gui", "manager", "material", "parse", "realistic", "overlay",
-#         "renderer", "terrain", "util", "defs", "setup"
-#     ]:
-#     sys.modules.pop(m, 0)
-
-
 def _checkPath():
     path = os.path.dirname(__file__)
     if path in sys.path:
@@ -60,14 +50,22 @@ def _checkPath():
 
 _checkPath()
 
-import projection # pylint: disable=I0011, C0413
 from dependencies import install_deps, get_python_path  # pylint: disable=I0011, C0413
 
+# These are the exported attributes that contains the Projection Class as
+# well as the SRID to instantiate it
+SRID = 'EPSG:3857'
+GeneralProjection = None  # pylint: disable=C0103
 
 class InstallDependencies(bpy.types.Operator):
+    """Operator that install dependencies
+
+    Arguments:
+        bpy {} -- Operator
+    """
     bl_idname = "bpyproj.dependencies"
     bl_label = "Install Dependencies"
-    bl_description = "Install Pip and Pyproj dependencies"
+    bl_description = "Attempts to install Pyproj depenedency"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -76,6 +74,38 @@ class InstallDependencies(bpy.types.Operator):
 
     def invoke(self, context, event):
         install_deps()
+        return {'FINISHED'}
+
+class SetSRID(bpy.types.Operator):
+    """Operator that sets the SRID and GeneralProjection Class
+
+    Arguments:
+        bpy {} -- Operator
+    """
+    bl_idname = "bpyproj.set_srid"
+    bl_label = "Set Projection"
+    bl_description = "Sets the Map Projection"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.mode == 'OBJECT'
+
+    def invoke(self, context, event):
+        global GeneralProjection, SRID
+        # Attempt to import AllProjection module
+        # Will fail if dependencies not installed
+        try:
+            from projection.all_projections import AllProjections
+            # Set the SRID and imported class
+            SRID = bpy.context.scene.bpyproj.srid
+            GeneralProjection = AllProjections
+
+            log.info('Updated SRID to %s', SRID)
+        except Exception as e:
+            log.error('Dependencies not installed correctly!')
+            log.error('Error: %s', e)
+
         return {'FINISHED'}
 
 
@@ -90,9 +120,32 @@ class PyprojProperties(bpy.types.PropertyGroup):
     )
 
 
+class DependencySettings(bpy.types.Panel):
+    """Creates a GUI panel to allow user to specify SRID projection
+    """
+    bl_label = "Dependencies"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_context = "objectmode"
+    bl_category = "projection"
+
+    def draw(self, context):
+        """Draws the panel
+
+        Arguments:
+            context {object} -- Context of the invocation
+        """
+
+        layout = self.layout
+        addon = context.scene.bpyproj
+
+        box = layout.box()
+
+        box.operator("bpyproj.dependencies")
+
+
 class PanelSettings(bpy.types.Panel):
     """Creates a GUI panel to allow user to specify SRID projection
-
     """
     bl_label = "Settings"
     bl_space_type = "VIEW_3D"
@@ -105,7 +158,6 @@ class PanelSettings(bpy.types.Panel):
 
         Arguments:
             context {object} -- Context of the invocation
-
         """
 
         layout = self.layout
@@ -114,7 +166,7 @@ class PanelSettings(bpy.types.Panel):
         box = layout.box()
         box.prop(addon, "srid")
 
-        box.operator("bpyproj.dependencies")
+        box.operator("bpyproj.set_srid")
 
 
 def register():

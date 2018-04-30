@@ -95,10 +95,10 @@ def install_pyproj():
     to_site_packages_path = os.path.join(
         get_site_packages_path(python_path), PYPROJ)
 
-    if not is_windows():
+    try:
         shutil.copytree(from_binary_python_package, to_site_packages_path)
         log.info('Finished installing Pyproj')
-    else:
+    except Exception as e:
         log.error(
             "Can not automatically install this package on Windows. Requires administrator privileges.")
         log.error(
