@@ -21,7 +21,7 @@ import sys
 import textwrap
 import logging
 
-import bpy
+import bpy  # pylint: disable=E0401
 
 log = logging.getLogger(__name__)
 
@@ -57,6 +57,7 @@ from dependencies import install_deps, get_python_path  # pylint: disable=I0011,
 SRID = 'EPSG:3857'
 GeneralProjection = None  # pylint: disable=C0103
 
+
 class InstallDependencies(bpy.types.Operator):
     """Operator that install dependencies
 
@@ -73,8 +74,14 @@ class InstallDependencies(bpy.types.Operator):
         return context.mode == 'OBJECT'
 
     def invoke(self, context, event):
-        install_deps()
+        try:
+            install_deps()
+            self.report({'INFO'}, "Successfully installed dependencies")
+        except Exception as e:
+            print(e)
+            self.report({'ERROR'}, "Dependency install failed")
         return {'FINISHED'}
+
 
 class SetSRID(bpy.types.Operator):
     """Operator that sets the SRID and GeneralProjection Class
@@ -102,9 +109,13 @@ class SetSRID(bpy.types.Operator):
             GeneralProjection = AllProjections
 
             log.info('Updated SRID to %s', SRID)
+            self.report({'INFO'}, "Updated SRID")
         except Exception as e:
-            log.error('Dependencies not installed correctly!')
+            log.error(
+                'Dependencies not installed for bpyproj! Please install dependencies')
             log.error('Error: %s', e)
+            self.report(
+                {'ERROR'}, "Update unsuccessful! Dependency install failed, please install dependencies")
 
         return {'FINISHED'}
 
@@ -172,6 +183,16 @@ class PanelSettings(bpy.types.Panel):
 def register():
     """Registers this addon modules
     """
+    # Attempt to set the SRID, dependencies may have already been installed
+    global SRID, GeneralProjection
+    try:
+        from projection.all_projections import AllProjections
+        GeneralProjection = AllProjections
+    except Exception as e:
+        log.error(
+            'Dependencies not installed for bpyproj! Please install dependencies')
+        log.error('Error: %s', e)
+
     bpy.utils.register_module(__name__)
     bpy.types.Scene.bpyproj = bpy.props.PointerProperty(type=PyprojProperties)
 

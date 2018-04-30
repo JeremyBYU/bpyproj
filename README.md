@@ -1,6 +1,6 @@
 # Blender Map Projection Plugin
 
-This plugin registers a module in the blender python environment which can perform arbitrary Map Projections. The plugins make use of [pyproj](https://github.com/jswhit/pyproj) in order to perform these projections. To learn more about projections and why the are useful, I encourage you to read [this](http://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/what-are-map-projections.htm#GUID-57EBA564-3106-4CD0-94AB-FA43C1320523).
+This plugin registers a module in the blender python environment which can perform arbitrary Map Projections. The plugin makes use of [pyproj](https://github.com/jswhit/pyproj) in order to perform these projections. To learn more about projections and why the are useful, I encourage you to read [this](http://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/what-are-map-projections.htm#GUID-57EBA564-3106-4CD0-94AB-FA43C1320523).
 
 
 Pyproj relies upon a binary dependency, [proj4](http://proj4.org/), requiring this plugin to distribute these binaries. This plugin will attempt to install these binaries into the blender embedded python environment.
