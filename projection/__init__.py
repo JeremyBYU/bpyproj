@@ -59,7 +59,7 @@ class GeneralProjection:
         try:
             self.proj = Proj(init=srid)
         except:
-            print('SRID is invalid! Defaulting to ' + DEFAULT_SRID)
+            log.error('SRID is invalid! Defaulting to %s', DEFAULT_SRID)
             self.proj = Proj(init=DEFAULT_SRID)
 
         self.offset = self.proj(self.lon, self.lat)

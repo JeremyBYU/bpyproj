@@ -73,6 +73,7 @@ def getProjection(lat, lon):
         log.error('Error: %s', e)
         return None
 
+
 def draw(context, layout):
     """Specifies the GUI elements to be drawn by an external plugin
 
@@ -82,9 +83,14 @@ def draw(context, layout):
     """
     addon = context.scene.bpyproj
     box = layout.box()
-    box.operator("bpyproj.dependencies")
-    box.prop(addon, "srid")
-    box.prop(addon, "proj_params")
+
+    box.prop(addon, "proj_type")
+    if addon.proj_type == "srid":
+        box.prop(addon, "srid")
+    else:
+        box.prop(addon, "proj_params")
+    # box.operator("bpyproj.dependencies")
+
 
 class InstallDependencies(bpy.types.Operator):
     """Operator that installs dependencies for this plugin
@@ -106,8 +112,9 @@ class InstallDependencies(bpy.types.Operator):
             install_deps()
             self.report({'INFO'}, "Successfully installed dependencies")
         except Exception as e:
-            log.error('Error: %s', e)
-            self.report({'ERROR'}, "Dependency install failed")
+            log.exception('Error Installing Dependencies. Full Stack Trace:')
+            self.report(
+                {'ERROR'}, "Dependency install failed: {}".format(str(e)))
         return {'FINISHED'}
 
 
@@ -115,6 +122,17 @@ class PyprojProperties(bpy.types.PropertyGroup):
     """Specifies global properties available for this module
     """
 
+    proj_type = bpy.props.EnumProperty(
+        name="Specify Projection",
+        items=(
+            ("srid", "SRID",
+                "Use Spatial Reference System Identifier (e.g. EPSG:3857)"),
+            ("params", "Proj4 Params",
+                "Specify the Proj4 parameters as a string")
+        ),
+        description="Specify Projection with SRID or Proj4 parameter string ",
+        default="srid"
+    )
     srid = bpy.props.StringProperty(
         name="SRID",
         description="Spatial Reference System ID (e.g. EPSG:3857)",
@@ -125,6 +143,7 @@ class PyprojProperties(bpy.types.PropertyGroup):
         description="Proj4 Projection Parameters",
         default=''
     )
+
 
 class PanelSettings(bpy.types.Panel):
     """Creates a GUI panel to allow user to specify SRID projection
@@ -144,6 +163,15 @@ class PanelSettings(bpy.types.Panel):
 
         layout = self.layout
         draw(context, layout)
+
+
+class BpyprojPreferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label("Click here to install addon dependencies")
+        layout.operator("bpyproj.dependencies", text="Install Dependencies")
 
 
 def register():

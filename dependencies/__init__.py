@@ -39,7 +39,7 @@ def is_linux():
 
 def get_python_path():
     blender_dir = os.path.dirname(sys.executable)
-    # OSX directory stucture is different than linux or windows
+    # OSX directory structure is different than linux or windows
     if is_osx():
         blender_dir = os.path.join(os.path.dirname(blender_dir), 'Resources')
     version_sub_dir = bpy.app.version_string.split(' ')[0]
@@ -108,6 +108,7 @@ def install_pyproj():
     try:
         shutil.copytree(from_binary_python_package, to_site_packages_path)
         log.info('Finished installing Pyproj')
+        print('Downloaded dependencies from: https://anaconda.org/conda-forge/pyproj/files')
     except Exception as e:
         log.error(
             "Can not automatically install this package on Windows. Requires administrator privileges.")
@@ -115,3 +116,4 @@ def install_pyproj():
             "Please install manually by copying the following folders.")
         log.error("FROM: %s; TO: %s", from_binary_python_package,
                   to_site_packages_path)
+        raise Exception('Cant copy files, see log.')
