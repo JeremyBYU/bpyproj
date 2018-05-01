@@ -14,7 +14,7 @@ Download the plugin (this repository) and extract to your plugin folder.  Anothe
 
 ### Install Dependencies
 
-Install dependencies by clicking the button `Install Dependencies`. If it was a success a message will pop up letting you know. If a failure occurs a message box will pop up providing instructions. Note special instruction for windows follow.
+Install dependencies by clicking the button `Install Dependencies`. If it was a success a message will pop up letting you know. If a failure occurs a message box will pop up providing instructions. Note special instruction for Windows OS follow.
 
 Windows:
 
@@ -24,7 +24,7 @@ If blender is **not** run with administrator privilege (possibly because you are
 
 ### Set SRID
 
-Spatial Reference Identifier (SRID) is a code that tells the plugin which projection system you desire to work with. A list of common SRIDS can be found here at [EPSG.io](http://epsg.io/). Type in your code and then click the button `Set Projection`.
+Spatial Reference Identifier (SRID) is a code that tells the plugin which projection system you desire to work with. A list of common SRID's can be found here at [EPSG.io](http://epsg.io/). Type in your code and then click the button `Set Projection`.
 
 
 

@@ -7,7 +7,7 @@ import shutil
 import logging
 from glob import glob
 
-import bpy
+import bpy  # pylint: disable=E0401
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -16,6 +16,13 @@ DIR_NAME = os.path.dirname(__file__)
 BINARIES_FOLDER = os.path.join(DIR_NAME, 'binaries')
 PYTHON_FOLDER_STRUCTURE = 'python/bin'
 PYPROJ = 'pyproj'
+
+# TODO - Download these URLS dynamically instead of bundling
+URLS = {
+    'osx_64_35': 'https://anaconda.org/conda-forge/pyproj/1.9.4/download/osx-64/pyproj-1.9.4-py35_0.tar.bz2',
+    'windows_64_35': 'https://anaconda.org/conda-forge/pyproj/1.9.5.1/download/win-64/pyproj-1.9.5.1-py35_0.tar.bz2',
+    'linux_64_35': 'https://anaconda.org/conda-forge/pyproj/1.9.5.1/download/linux-64/pyproj-1.9.5.1-py35_0.tar.bz2'
+}
 
 
 def is_windows():
@@ -44,7 +51,7 @@ def get_site_packages_path(python_path):
     pattern = '/lib/*/site-packages'
     if is_windows():
         pattern = '/lib/site-packages*'
-    # import pdb; pdb.set_trace()
+
     site_list = sorted(glob(python_dir + pattern))
     if site_list:
         return site_list[0]
@@ -76,7 +83,7 @@ def check_install_pyproj():
     """Checks if pyproj is installed, if not installs it
     """
     try:
-        import pyproj  # pylint: disable=I0011, C0413
+        import pyproj  # pylint: disable=I0011, C0413, W0612
         log.info('Pyproj already installed')
     except ImportError:
         log.info("Pyproj not present! --- installing Pyproj")

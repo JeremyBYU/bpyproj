@@ -30,7 +30,7 @@ bl_info = {
     "author": "Jeremy Castagno <jeremybyu@gmail.com>",
     "version": (1, 0, 0),
     "blender": (2, 7, 9),
-    "location": "File > Import > OpenStreetMap (.osm)",
+    "location": "File > Import > Projection",
     "description": "Specify a map projection for external import plugins (e.g. blender-osm)",
     "warning": "",
     "wiki_url": "https://github.com/JeremyBYU/bpyproj",
@@ -50,23 +50,50 @@ def _checkPath():
 
 _checkPath()
 
-from dependencies import install_deps, get_python_path  # pylint: disable=I0011, C0413
+from dependencies import install_deps  # pylint: disable=I0011, C0413
 
-# These are the exported attributes that contains the Projection Class as
-# well as the SRID to instantiate it
-SRID = 'EPSG:3857'
-GeneralProjection = None  # pylint: disable=C0103
 
+def getProjection(lat, lon):
+    """Returns an instantiated GeneralProjection Class
+
+    Arguments:
+        lat {number} -- origin latitude
+        lon {number} -- origin longitude
+    """
+    # Attempt to import AllProjection module
+    # Will fail if dependencies not installed
+    try:
+        from projection import GeneralProjection
+        srid = bpy.context.scene.bpyproj.srid
+        log.info('Returning requested GeneralProjection')
+        return GeneralProjection(srid=srid, lat=lat, lon=lon)
+    except Exception as e:
+        log.error(
+            'Dependencies not installed for bpyproj! Please install dependencies')
+        log.error('Error: %s', e)
+        return None
+
+def draw(context, layout):
+    """Specifies the GUI elements to be drawn by an external plugin
+
+    Arguments:
+        context {} -- Blender Context
+        layout {} -- GUI layout
+    """
+    addon = context.scene.bpyproj
+    box = layout.box()
+    box.operator("bpyproj.dependencies")
+    box.prop(addon, "srid")
 
 class InstallDependencies(bpy.types.Operator):
-    """Operator that install dependencies
+    """Operator that installs dependencies for this plugin
 
     Arguments:
         bpy {} -- Operator
     """
     bl_idname = "bpyproj.dependencies"
     bl_label = "Install Dependencies"
-    bl_description = "Attempts to install Pyproj depenedency"
+    bl_description = "Attempts to install Pyproj dependency"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -78,45 +105,8 @@ class InstallDependencies(bpy.types.Operator):
             install_deps()
             self.report({'INFO'}, "Successfully installed dependencies")
         except Exception as e:
-            print(e)
-            self.report({'ERROR'}, "Dependency install failed")
-        return {'FINISHED'}
-
-
-class SetSRID(bpy.types.Operator):
-    """Operator that sets the SRID and GeneralProjection Class
-
-    Arguments:
-        bpy {} -- Operator
-    """
-    bl_idname = "bpyproj.set_srid"
-    bl_label = "Set Projection"
-    bl_description = "Sets the Map Projection"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    @classmethod
-    def poll(cls, context):
-        return context.mode == 'OBJECT'
-
-    def invoke(self, context, event):
-        global GeneralProjection, SRID
-        # Attempt to import AllProjection module
-        # Will fail if dependencies not installed
-        try:
-            from projection.all_projections import AllProjections
-            # Set the SRID and imported class
-            SRID = bpy.context.scene.bpyproj.srid
-            GeneralProjection = AllProjections
-
-            log.info('Updated SRID to %s', SRID)
-            self.report({'INFO'}, "Updated SRID")
-        except Exception as e:
-            log.error(
-                'Dependencies not installed for bpyproj! Please install dependencies')
             log.error('Error: %s', e)
-            self.report(
-                {'ERROR'}, "Update unsuccessful! Dependency install failed, please install dependencies")
-
+            self.report({'ERROR'}, "Dependency install failed")
         return {'FINISHED'}
 
 
@@ -129,31 +119,6 @@ class PyprojProperties(bpy.types.PropertyGroup):
         description="Spatial Reference System ID (e.g. EPSG:3857)",
         default='EPSG:3857'
     )
-
-
-class DependencySettings(bpy.types.Panel):
-    """Creates a GUI panel to allow user to specify SRID projection
-    """
-    bl_label = "Dependencies"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_context = "objectmode"
-    bl_category = "projection"
-
-    def draw(self, context):
-        """Draws the panel
-
-        Arguments:
-            context {object} -- Context of the invocation
-        """
-
-        layout = self.layout
-        addon = context.scene.bpyproj
-
-        box = layout.box()
-
-        box.operator("bpyproj.dependencies")
-
 
 class PanelSettings(bpy.types.Panel):
     """Creates a GUI panel to allow user to specify SRID projection
@@ -175,24 +140,15 @@ class PanelSettings(bpy.types.Panel):
         addon = context.scene.bpyproj
 
         box = layout.box()
+        box.operator("bpyproj.dependencies")
         box.prop(addon, "srid")
 
-        box.operator("bpyproj.set_srid")
+        # box.operator("bpyproj.set_srid")
 
 
 def register():
     """Registers this addon modules
     """
-    # Attempt to set the SRID, dependencies may have already been installed
-    global SRID, GeneralProjection
-    try:
-        from projection.all_projections import AllProjections
-        GeneralProjection = AllProjections
-    except Exception as e:
-        log.error(
-            'Dependencies not installed for bpyproj! Please install dependencies')
-        log.error('Error: %s', e)
-
     bpy.utils.register_module(__name__)
     bpy.types.Scene.bpyproj = bpy.props.PointerProperty(type=PyprojProperties)
 
