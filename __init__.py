@@ -170,7 +170,6 @@ class BpyprojPreferences(bpy.types.AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
-        layout.label("Click here to install addon dependencies")
         layout.operator("bpyproj.dependencies", text="Install Dependencies")
 
 

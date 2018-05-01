@@ -9,24 +9,29 @@ Pyproj relies upon a binary dependency, [Proj4](http://proj4.org/), requiring th
 
 Download the plugin (this repository) and extract to your plugin folder.  Another way is by following these [instructions](https://blendersensei.com/definitive-guide-to-installing-blender-addons/) using the Blenders built in GUI to install the plugin zip file.
 
-
-## How to Use
-![Settings](imgs/settings.png)
-
 ### Install Dependencies
 
-Install dependencies by clicking the button `Install Dependencies`. If it was a success a message will pop up letting you know. If a failure occurs a message box will pop up providing instructions. Note special instruction for Windows OS follow.
+After installation you will **also** need to install *dependencies* for the plugin.  You can do this by going to File -> User Preferences -> Add-ons.  Then scroll to the `Import-Export: Map Projection` (this plugin) and expand the plugin by click the arrow. You should see a section titled `Preferences` along with a button. Install dependencies by clicking the button `Install Dependencies` (see picture below). If it was a success a message will appear letting you know. If a failure occurs a message box will pop up providing details (also look at the log output). Note special instruction for Windows OS follow.
+
+![Settings](imgs/dependencies.png)
 
 Windows:
 
 For the first launch, please run Blender as **administrator** so that the dependencies can be installed. This is necessary because blender is installed in `C:\Programs Files` which is off limits without administrator privilege.
 
-If blender is **not** run with administrator privilege (possibly because you are uncomfortable giving it permissions for this **one** install), then a message box will present itself telling the user what files need to be copied manually with administrative privilege. 
+If blender is **not** run with administrator privilege (possibly because you are uncomfortable giving it permissions for this **one** install), then the log provides instructions detailing what files need to be copied manually with administrative privilege. 
 
-### Set SRID
 
-Spatial Reference Identifier (SRID) is a code that tells the plugin which projection system you desire to work with. A list of common SRID's can be found here at [EPSG.io](http://epsg.io/). Simply type in the SRID (e.g. EPSG:3857) into the `SRID` field. If more granular control is needed you can input the Proj.4 parameters directly as well in the other field titled `Proj4 Parameters`.
+## How to Use
 
+
+Spatial Reference Identifier (SRID) is a code that tells the plugin which projection system you desire to work with. A list of common SRID's can be found here at [EPSG.io](http://epsg.io/). Simply type in the SRID (e.g. EPSG:3857) into the `SRID` field.
+
+![Settings](imgs/settings.png)
+
+ If more granular control is needed you can change the drop down menu (`Specify Projection`) from `SRID` to `Proj4 Params`. You can now input the Proj.4 parameter string directly in the field titled `Proj4 Parameters`.
+
+![Settings](imgs/settings_proj4.png)
 
 
 

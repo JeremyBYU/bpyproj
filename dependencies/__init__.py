@@ -109,6 +109,7 @@ def install_pyproj():
         shutil.copytree(from_binary_python_package, to_site_packages_path)
         log.info('Finished installing Pyproj')
         print('Downloaded dependencies from: https://anaconda.org/conda-forge/pyproj/files')
+        print('Files saved to: {}:'.format(to_site_packages_path))
     except Exception as e:
         log.error(
             "Can not automatically install this package on Windows. Requires administrator privileges.")
