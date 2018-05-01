@@ -39,6 +39,9 @@ def is_linux():
 
 def get_python_path():
     blender_dir = os.path.dirname(sys.executable)
+    # OSX directory stucture is different than linux or windows
+    if is_osx():
+        blender_dir = os.path.join(os.path.dirname(blender_dir), 'Resources')
     version_sub_dir = bpy.app.version_string.split(' ')[0]
     python_dir = os.path.join(
         blender_dir, version_sub_dir, PYTHON_FOLDER_STRUCTURE)
