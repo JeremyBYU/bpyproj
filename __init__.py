@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 import sys
-import textwrap
 import logging
 
 import bpy  # pylint: disable=E0401
@@ -65,8 +64,9 @@ def getProjection(lat, lon):
     try:
         from projection import GeneralProjection
         srid = bpy.context.scene.bpyproj.srid
+        proj_params = bpy.context.scene.bpyproj.proj_params
         log.info('Returning requested GeneralProjection')
-        return GeneralProjection(srid=srid, lat=lat, lon=lon)
+        return GeneralProjection(srid=srid, proj_params=proj_params, lat=lat, lon=lon)
     except Exception as e:
         log.error(
             'Dependencies not installed for bpyproj! Please install dependencies')
@@ -84,6 +84,7 @@ def draw(context, layout):
     box = layout.box()
     box.operator("bpyproj.dependencies")
     box.prop(addon, "srid")
+    box.prop(addon, "proj_params")
 
 class InstallDependencies(bpy.types.Operator):
     """Operator that installs dependencies for this plugin
@@ -119,6 +120,11 @@ class PyprojProperties(bpy.types.PropertyGroup):
         description="Spatial Reference System ID (e.g. EPSG:3857)",
         default='EPSG:3857'
     )
+    proj_params = bpy.props.StringProperty(
+        name="Proj4 Parameters",
+        description="Proj4 Projection Parameters",
+        default=''
+    )
 
 class PanelSettings(bpy.types.Panel):
     """Creates a GUI panel to allow user to specify SRID projection
@@ -137,13 +143,7 @@ class PanelSettings(bpy.types.Panel):
         """
 
         layout = self.layout
-        addon = context.scene.bpyproj
-
-        box = layout.box()
-        box.operator("bpyproj.dependencies")
-        box.prop(addon, "srid")
-
-        # box.operator("bpyproj.set_srid")
+        draw(context, layout)
 
 
 def register():

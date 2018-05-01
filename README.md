@@ -3,7 +3,7 @@
 This plugin registers a module in the blender python environment which can perform arbitrary Map Projections. The plugin makes use of [pyproj](https://github.com/jswhit/pyproj) in order to perform these projections. To learn more about projections and why the are useful, I encourage you to read [this](http://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/what-are-map-projections.htm#GUID-57EBA564-3106-4CD0-94AB-FA43C1320523).
 
 
-Pyproj relies upon a binary dependency, [proj4](http://proj4.org/), requiring this plugin to distribute these binaries. This plugin will attempt to install these binaries into the blender embedded python environment.
+Pyproj relies upon a binary dependency, [Proj4](http://proj4.org/), requiring this plugin to distribute these binaries. This plugin will attempt to install these binaries into the blender embedded python environment.
 
 ## Install Procedure
 
@@ -11,6 +11,7 @@ Download the plugin (this repository) and extract to your plugin folder.  Anothe
 
 
 ## How to Use
+![Settings](imgs/settings.png)
 
 ### Install Dependencies
 
@@ -24,7 +25,10 @@ If blender is **not** run with administrator privilege (possibly because you are
 
 ### Set SRID
 
-Spatial Reference Identifier (SRID) is a code that tells the plugin which projection system you desire to work with. A list of common SRID's can be found here at [EPSG.io](http://epsg.io/). Type in your code and then click the button `Set Projection`.
+Spatial Reference Identifier (SRID) is a code that tells the plugin which projection system you desire to work with. A list of common SRID's can be found here at [EPSG.io](http://epsg.io/). Simply type in the SRID (e.g. EPSG:3857) into the `SRID` field. If more granular control is needed you can input the Proj.4 parameters directly as well in the other field titled `Proj4 Parameters`.
+
+
+
 
 
 

@@ -20,6 +20,7 @@ import logging
 from pyproj import Proj
 
 DEFAULT_SRID = 'EPSG:3857'
+DEFAULT_PROJ_PARAMS = 'EPSG:'
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -29,7 +30,7 @@ class GeneralProjection:
     """Class that allows conversion between geodetic and any planar coordinate system
     """
 
-    def __init__(self, srid=DEFAULT_SRID, **kwargs):
+    def __init__(self, srid=DEFAULT_SRID, proj_params=DEFAULT_PROJ_PARAMS, **kwargs):
         # setting default values
         self.lat = 0.  # in degrees
         self.lon = 0.  # in degrees
@@ -39,7 +40,10 @@ class GeneralProjection:
             setattr(self, attr, kwargs[attr])
         # Set up user defined projection
         try:
-            self.proj = Proj(init=srid)
+            if proj_params:
+                self.proj = Proj(projparams=proj_params)
+            else:
+                self.proj = Proj(init=srid)
         except:
             log.error('SRID is invalid! Defaulting to %s', DEFAULT_SRID)
             self.proj = Proj(init=DEFAULT_SRID)
