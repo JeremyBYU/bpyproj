@@ -59,17 +59,22 @@ def getProjection(lat, lon):
         lat {number} -- origin latitude
         lon {number} -- origin longitude
     """
-    # Attempt to import AllProjection module
+    # Attempt to import GeneralProjection module
     # Will fail if dependencies not installed
     try:
         from projection import GeneralProjection
+        log.info('Returning requested GeneralProjection')
+
         srid = bpy.context.scene.bpyproj.srid
         proj_params = bpy.context.scene.bpyproj.proj_params
+        # srid and proj4 params are blank, return None
+        if not srid and not proj_params:
+            log.info('No projection selected by user. Returning None to calling function')
+            return None
         # Ensure that proj params are not set if user selects SRID
         if bpy.context.scene.bpyproj.proj_type == 'srid':
             proj_params = ''
 
-        log.info('Returning requested GeneralProjection')
         return GeneralProjection(srid=srid, proj_params=proj_params, lat=lat, lon=lon)
     except Exception as e:
         log.error(
@@ -114,7 +119,7 @@ class PyprojProperties(bpy.types.PropertyGroup):
     srid = bpy.props.StringProperty(
         name="SRID",
         description="Spatial Reference System ID (e.g. EPSG:3857)",
-        default='EPSG:3857'
+        default=''
     )
     proj_params = bpy.props.StringProperty(
         name="Proj4 Parameters",
