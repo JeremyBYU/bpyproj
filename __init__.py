@@ -68,7 +68,7 @@ def getProjection(lat, lon):
         # Ensure that proj params are not set if user selects SRID
         if bpy.context.scene.bpyproj.proj_type == 'srid':
             proj_params = ''
-    
+
         log.info('Returning requested GeneralProjection')
         return GeneralProjection(srid=srid, proj_params=proj_params, lat=lat, lon=lon)
     except Exception as e:
@@ -94,32 +94,6 @@ def draw(context, layout):
     else:
         box.prop(addon, "proj_params")
     # box.operator("bpyproj.dependencies")
-
-
-class InstallDependencies(bpy.types.Operator):
-    """Operator that installs dependencies for this plugin
-
-    Arguments:
-        bpy {} -- Operator
-    """
-    bl_idname = "bpyproj.dependencies"
-    bl_label = "Install Dependencies"
-    bl_description = "Attempts to install Pyproj dependency"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    @classmethod
-    def poll(cls, context):
-        return context.mode == 'OBJECT'
-
-    def invoke(self, context, event):
-        try:
-            install_deps()
-            self.report({'INFO'}, "Successfully installed dependencies")
-        except Exception as e:
-            log.exception('Error Installing Dependencies. Full Stack Trace:')
-            self.report(
-                {'ERROR'}, "Dependency install failed: {}".format(str(e)))
-        return {'FINISHED'}
 
 
 class PyprojProperties(bpy.types.PropertyGroup):
@@ -169,17 +143,10 @@ class PanelSettings(bpy.types.Panel):
         draw(context, layout)
 
 
-class BpyprojPreferences(bpy.types.AddonPreferences):
-    bl_idname = __name__
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator("bpyproj.dependencies", text="Install Dependencies")
-
-
 def register():
     """Registers this addon modules
     """
+    install_deps()
     bpy.utils.register_module(__name__)
     bpy.types.Scene.bpyproj = bpy.props.PointerProperty(type=PyprojProperties)
 

@@ -66,9 +66,7 @@ def check_install_pyproj():
     """
     try:
         import pyproj  # pylint: disable=I0011, C0413, W0612
-        log.info('Pyproj already installed')
     except ImportError:
-        log.info("Pyproj not present! --- installing Pyproj")
         install_pyproj()
 
 
@@ -76,11 +74,12 @@ def install_pyproj():
     """Install PyProj Dependencies
     Modified Python path to include the pyproj module that is included in package
     """
-    log.info('Begin installing Pyproj')
 
     package_dependencies_path = binary_os_folder()
-    sys.path.insert(0, package_dependencies_path)
-
-    log.info('Finished installing Pyproj')
-    print('Pyproj dependency downloaded from: https://anaconda.org/conda-forge/pyproj/files')
-    print('Files saved to: {}'.format(package_dependencies_path))
+    if os.path.isdir(package_dependencies_path):
+        sys.path.insert(0, package_dependencies_path)
+        log.info('Finished installing Pyproj')
+    else:
+        log.error('Pyproj package is not currently available for you system')
+        log.error(
+            'Can be downloaded manually from this url: https://anaconda.org/conda-forge/pyproj/files')
