@@ -65,6 +65,10 @@ def getProjection(lat, lon):
         from projection import GeneralProjection
         srid = bpy.context.scene.bpyproj.srid
         proj_params = bpy.context.scene.bpyproj.proj_params
+        # Ensure that proj params are not set if user selects SRID
+        if bpy.context.scene.bpyproj.proj_type == 'srid':
+            proj_params = ''
+    
         log.info('Returning requested GeneralProjection')
         return GeneralProjection(srid=srid, proj_params=proj_params, lat=lat, lon=lon)
     except Exception as e:
