@@ -11,15 +11,9 @@ Download the plugin (this repository) and extract to your plugin folder.  Anothe
 
 ### Install Dependencies
 
-After installation you will **also** need to install *dependencies* for the plugin.  You can do this by going to File -> User Preferences -> Add-ons.  Then scroll to the `Import-Export: Map Projection` (this plugin) and expand the plugin by clicking the arrow. You should see a section titled `Preferences` along with a button. Install dependencies by clicking the button `Install Dependencies` (see picture below). If it was a success a message will appear letting you know. If a failure occurs a message box will pop up providing details (also look at the log output). Note special instruction for Windows OS follow.
+After installation you will **also** need to install *dependencies* for the plugin.  You can do this by going to File -> User Preferences -> Add-ons.  Then scroll to the `Import-Export: Map Projection` (this plugin) and expand the plugin by clicking the arrow. You should see a section titled `Preferences` along with a button. Install dependencies by clicking the button `Install Dependencies` (see picture below). If it was a success a message will appear letting you know. If a failure occurs a message box will pop up providing details (also look at the log output). 
 
 ![Settings](imgs/dependencies.png)
-
-Windows:
-
-For the first launch, please run Blender as **administrator** so that the dependencies can be installed. This is necessary because blender is installed in `C:\Programs Files` which is off limits without administrator privilege.
-
-If blender is **not** run with administrator privilege (possibly because you are uncomfortable giving it permissions for this **one** install), then the log provides instructions detailing what files need to be copied manually with administrative privilege. 
 
 
 ## How to Use

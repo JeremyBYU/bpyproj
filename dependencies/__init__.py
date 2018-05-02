@@ -37,36 +37,15 @@ def is_linux():
     return _platform == "linux" or _platform == "linux2"
 
 
-def get_python_path():
-    blender_dir = os.path.dirname(sys.executable)
-    # OSX directory structure is different than linux or windows
-    if is_osx():
-        blender_dir = os.path.join(os.path.dirname(blender_dir), 'Resources')
-    version_sub_dir = bpy.app.version_string.split(' ')[0]
-    python_dir = os.path.join(
-        blender_dir, version_sub_dir, PYTHON_FOLDER_STRUCTURE)
-    python_path = sorted(glob(python_dir + '/python*'))[0]
-    return python_path
-
-
-def get_site_packages_path(python_path):
-    python_dir = os.path.dirname(os.path.dirname(python_path))
-    pattern = '/lib/*/site-packages'
-    if is_windows():
-        pattern = '/lib/site-packages*'
-
-    site_list = sorted(glob(python_dir + pattern))
-    if site_list:
-        return site_list[0]
-    else:
-        return None
-
-
 def binary_os_folder():
     """Gets the folder containing appropriate dependencies to be installed
     """
-    arch = "64"
-    python_ver = "35"
+    # Recommended way to check 64 bit architecture
+    # https://docs.python.org/3.5/library/platform.html
+    is_64bits = sys.maxsize > 2**32
+
+    arch = "64" if is_64bits else "32"
+    python_ver = "35"  # all new blender version use python 3.5
     os_ = "linux"
     if is_windows():
         os_ = "windows"
@@ -95,26 +74,13 @@ def check_install_pyproj():
 
 def install_pyproj():
     """Install PyProj Dependencies
-    Users must have python-dev installed for linux - https://stackoverflow.com/a/21530768/9341063
+    Modified Python path to include the pyproj module that is included in package
     """
     log.info('Begin installing Pyproj')
 
-    python_path = get_python_path()
+    package_dependencies_path = binary_os_folder()
+    sys.path.insert(0, package_dependencies_path)
 
-    from_binary_python_package = os.path.join(binary_os_folder(), PYPROJ)
-    to_site_packages_path = os.path.join(
-        get_site_packages_path(python_path), PYPROJ)
-
-    try:
-        shutil.copytree(from_binary_python_package, to_site_packages_path)
-        log.info('Finished installing Pyproj')
-        print('Downloaded dependencies from: https://anaconda.org/conda-forge/pyproj/files')
-        print('Files saved to: {}:'.format(to_site_packages_path))
-    except Exception as e:
-        log.error(
-            "Can not automatically install this package on Windows. Requires administrator privileges.")
-        log.error(
-            "Please install manually by copying the following folders.")
-        log.error("FROM: %s; TO: %s", from_binary_python_package,
-                  to_site_packages_path)
-        raise Exception('Cant copy files, see log.')
+    log.info('Finished installing Pyproj')
+    print('Pyproj dependency downloaded from: https://anaconda.org/conda-forge/pyproj/files')
+    print('Files saved to: {}'.format(package_dependencies_path))
