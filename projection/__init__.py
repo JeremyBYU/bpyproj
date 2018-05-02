@@ -20,7 +20,7 @@ import logging
 from pyproj import Proj
 
 DEFAULT_SRID = 'EPSG:3857'
-DEFAULT_PROJ_PARAMS = 'EPSG:'
+DEFAULT_PROJ_PARAMS = ''
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -44,20 +44,6 @@ class GeneralProjection:
                 self.proj = Proj(projparams=proj_params)
             else:
                 self.proj = Proj(init=srid)
-        except:
-            log.error('SRID is invalid! Defaulting to %s', DEFAULT_SRID)
-            self.proj = Proj(init=DEFAULT_SRID)
-
-        self.offset = self.proj(self.lon, self.lat)
-
-    def update_projection(self, srid):
-        """Updates the projected coordinate system
-
-        Arguments:
-            srid {SRID} -- Unique identifier for spatial reference system
-        """
-        try:
-            self.proj = Proj(init=srid)
         except:
             log.error('SRID is invalid! Defaulting to %s', DEFAULT_SRID)
             self.proj = Proj(init=DEFAULT_SRID)
