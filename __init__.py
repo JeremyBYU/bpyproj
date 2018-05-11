@@ -69,7 +69,8 @@ def getProjection(lat, lon):
         proj_params = bpy.context.scene.bpyproj.proj_params
         # srid and proj4 params are blank, return None
         if not srid and not proj_params:
-            log.info('No projection selected by user. Returning None to calling function')
+            log.info(
+                'No projection selected by user. Returning None to calling function')
             return None
         # Ensure that proj params are not set if user selects SRID
         if bpy.context.scene.bpyproj.proj_type == 'srid':
@@ -126,26 +127,6 @@ class PyprojProperties(bpy.types.PropertyGroup):
         description="Proj4 Projection Parameters",
         default=''
     )
-
-
-class PanelSettings(bpy.types.Panel):
-    """Creates a GUI panel to allow user to specify SRID projection
-    """
-    bl_label = "Settings"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_context = "objectmode"
-    bl_category = "projection"
-
-    def draw(self, context):
-        """Draws the panel
-
-        Arguments:
-            context {object} -- Context of the invocation
-        """
-
-        layout = self.layout
-        draw(context, layout)
 
 
 def register():
