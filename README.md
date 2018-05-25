@@ -19,3 +19,6 @@ Spatial Reference Identifier (SRID) is a code that tells the plugin which projec
 If more granular control is needed you can change the drop down menu (`Specify Projection`) from `SRID` to `Proj4 Params`. You can now input the Proj.4 parameter string directly in the field titled `Proj4 Parameters`.
 
 ![Settings](imgs/settings_proj4.png)
+
+## Bpyproj for Addon Developers
+Read the dedicated wiki [page](https://github.com/JeremyBYU/bpyproj/wiki/bpyproj-for-addon-developers).
