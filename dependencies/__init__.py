@@ -45,7 +45,8 @@ def binary_os_folder():
     is_64bits = sys.maxsize > 2**32
 
     arch = "64" if is_64bits else "32"
-    python_ver = "35"  # all new blender version use python 3.5
+
+    python_ver = str(sys.version_info.major) + str(sys.version_info.minor)
     os_ = "linux"
     if is_windows():
         os_ = "windows"
