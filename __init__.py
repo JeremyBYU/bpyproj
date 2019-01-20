@@ -27,8 +27,8 @@ log = logging.getLogger(__name__)
 bl_info = {
     "name": "Map Projection",
     "author": "Jeremy Castagno <jeremybyu@gmail.com>",
-    "version": (1, 0, 0),
-    "blender": (2, 7, 9),
+    "version": (1, 0, 1),
+    "blender": (2, 80, 0),
     "location": "File > Import > Projection",
     "description": "Specify a map projection for external import plugins (e.g. blender-osm)",
     "warning": "",
