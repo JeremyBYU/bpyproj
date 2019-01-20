@@ -25,12 +25,12 @@ import bpy  # pylint: disable=E0401
 log = logging.getLogger(__name__)
 
 bl_info = {
-    "name": "Map Projection",
+    "name": "Map Projection (bpyproj)",
     "author": "Jeremy Castagno <jeremybyu@gmail.com>",
     "version": (1, 0, 1),
     "blender": (2, 80, 0),
     "location": "On the GUI panel of external import addons (e.g. blender-osm)",
-    "description": "bpyproj: specify a map projection for external import addons (e.g. blender-osm)",
+    "description": "Specify a map projection for external import addons (e.g. blender-osm)",
     "warning": "",
     "wiki_url": "https://github.com/JeremyBYU/bpyproj",
     "tracker_url": "https://github.com/JeremyBYU/bpyproj/issues",
