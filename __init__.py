@@ -133,14 +133,14 @@ def register():
     """Registers this addon modules
     """
     install_deps()
-    bpy.utils.register_module(__name__)
+    bpy.utils.register_class(PyprojProperties)
     bpy.types.Scene.bpyproj = bpy.props.PointerProperty(type=PyprojProperties)
 
 
 def unregister():
     """Unregister this addon modules
     """
-    bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_class(PyprojProperties)
     del bpy.types.Scene.bpyproj
 
 
