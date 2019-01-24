@@ -6,7 +6,7 @@ Pyproj relies upon a binary dependency, [Proj4](http://proj4.org/), requiring th
 
 ## Install Procedure
 
-Download the addon from [here](https://github.com/JeremyBYU/bpyproj/releases/download/v1.0.2/bpyproj.zip), install and activate it as an ordinary Blender addon. Follow these [instructions](https://blendersensei.com/definitive-guide-to-installing-blender-addons/) if you have never installed a Blender addon.
+Download the addon from [here](https://github.com/JeremyBYU/bpyproj/releases/download/v1.0.3/bpyproj.zip), install and activate it as an ordinary Blender addon. Follow these [instructions](https://blendersensei.com/definitive-guide-to-installing-blender-addons/) if you have never installed a Blender addon.
 
 This plugin will attempt to automatically install the `pyproj` dependency upon startup. A message will appear in the log if there is any error.
 
